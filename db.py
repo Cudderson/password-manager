@@ -1,6 +1,8 @@
 """This file will handle SQL database setup"""
 
 import mysql.connector
+import master_key
+import crypt_key
 
 with open('password.txt', 'r') as f:
     password = f.readline()
@@ -78,4 +80,44 @@ def create_tables():
     pm_db.commit()
 
 
-create_tables()
+def tables_exist():
+    """Checks if db schema is set up properly and returns a boolean"""
+
+    tables_in_db = False
+    tables_exist_query = 'SHOW TABLES'
+    cursor.execute(tables_exist_query)
+    my_tables = cursor.fetchall()
+
+    if len(my_tables) == 4:
+        tables_in_db = True
+
+    return tables_in_db
+
+
+# store crypt_key
+def store_encryption_key():
+    # create crypt key
+    new_crypt_key, crypt_query = crypt_key.create_crypt_key()
+
+    cursor.execute(crypt_query, (new_crypt_key,))
+    pm_db.commit()
+
+
+def store_master_key():
+    # create master key
+    new_master, master_key_query = master_key.create_master_key()
+
+    cursor.execute(master_key_query, (new_master,))
+    pm_db.commit()
+
+
+# make sure database is set up correctly
+if tables_exist():
+    print("database found...")
+else:
+    create_tables()
+    print("database schema created successfully.")
+    store_encryption_key()
+    print("encryption key created and stored")
+    store_master_key() # still need to encrypt the master key
+    print("master key created and stored")
