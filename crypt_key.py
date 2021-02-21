@@ -11,9 +11,7 @@ def create_crypt_key():
     # key is type 'bytes'
     new_crypt_key = Fernet.generate_key()
 
-    crypt_query = 'INSERT INTO Crypt (crypt_key) VALUES (%s)'
-
-    return new_crypt_key, crypt_query
+    return new_crypt_key
 
     # Save just in case
     #crypt_query = 'INSERT INTO Crypt (crypt_key) VALUES (%s)'

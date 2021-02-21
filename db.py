@@ -40,18 +40,6 @@ def create_pass_table():
     return create_pass_table_query
 
 
-def create_key_table():
-    """Returns the query needed to create the table for encryption key in database"""
-
-    create_key_table_query = \
-        'CREATE TABLE Crypt ' \
-        '(key_id int AUTO_INCREMENT, ' \
-        'crypt_key BINARY(120) NOT NULL, ' \
-        'PRIMARY KEY (key_id))'
-
-    return create_key_table_query
-
-
 def create_master_table():
     """Returns the query needed to create the table for the master key in database"""
 
@@ -69,13 +57,11 @@ def create_tables():
 
     create_site_table_query = create_site_table()
     create_pass_table_query = create_pass_table()
-    create_key_table_query = create_key_table()
     create_master_table_query = create_master_table()
 
     cursor.execute(create_site_table_query)
     cursor.execute(create_pass_table_query)
     cursor.execute(create_master_table_query)
-    cursor.execute(create_key_table_query)
 
     pm_db.commit()
 
@@ -88,7 +74,7 @@ def tables_exist():
     cursor.execute(tables_exist_query)
     my_tables = cursor.fetchall()
 
-    if len(my_tables) == 4:
+    if len(my_tables) == 3:
         tables_in_db = True
 
     return tables_in_db
@@ -97,10 +83,10 @@ def tables_exist():
 # store crypt_key
 def store_encryption_key():
     # create crypt key
-    new_crypt_key, crypt_query = crypt_key.create_crypt_key()
+    new_crypt_key = crypt_key.create_crypt_key()
 
-    cursor.execute(crypt_query, (new_crypt_key,))
-    pm_db.commit()
+    with open('crypt_key.txt', "wb") as f:
+        f.write(new_crypt_key)
 
 
 def store_master_key():
