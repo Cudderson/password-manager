@@ -1,7 +1,6 @@
 """This file will handle SQL database setup"""
 
 import mysql.connector
-import master_key
 import crypt_key
 
 with open('password.txt', 'r') as f:
@@ -87,13 +86,3 @@ def store_encryption_key():
 
     with open('crypt_key.txt', "wb") as f:
         f.write(new_crypt_key)
-
-
-# make sure database is set up correctly
-if tables_exist():
-    print("database found...")
-else:
-    create_tables()
-    print("database schema created successfully.")
-    store_encryption_key()
-    print("encryption key created and stored")

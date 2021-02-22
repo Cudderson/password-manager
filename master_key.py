@@ -4,7 +4,6 @@
 def create_master_key():
     """Creates and returns master password"""
 
-    master_key_query = 'INSERT INTO Master (master_key) VALUES (%s)'
 
     print("\nBefore we begin, let's set a master password for this program.\n"
           "Your master password will be required to access your stored passwords.")
@@ -18,7 +17,7 @@ def create_master_key():
 
         if store_new_master_confirm == 'yes':
 
-            return new_master, master_key_query
+            return new_master
 
         elif store_new_master_confirm == 'no':
 

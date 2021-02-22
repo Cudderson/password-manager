@@ -53,19 +53,75 @@ def get_master_key():
     return master_key_found
 
 
-def store_master_key():
-    # create master key
-    new_master, master_key_query = master_key.create_master_key()
+def store_master_key(new_master_key):
 
-    new_master = encrypt_password(new_master.encode('UTF-8'))
+    master_key_query = 'INSERT INTO Master (master_key) VALUES (%s)'
 
-    db.cursor.execute(master_key_query, (new_master,))
+    new_master_key = encrypt_password(new_master_key.encode('UTF-8'))
+
+    db.cursor.execute(master_key_query, (new_master_key,))
     db.pm_db.commit()
 
 
-store_master_key() # still need to encrypt the master key
-print("master key created and stored")
-x = get_master_key()
-print(f"master key from db, decrypted >> {x}")
+def master_login(master_from_db):
+    """Retrieves master key and allows access to db if matched correctly"""
 
+    login_master = input("\nEnter your master password to begin using Password Manager: ")
+
+    if login_master == master_from_db:
+
+        print("Access granted!\n")
+        access_granted = True
+
+        return access_granted
+
+    else:
+        # get master, and decrypt/decode
+        print("Uh oh, that is not your master password. Try again.")
+        return master_login()
+
+
+# make sure database is set up correctly
+def confirm_tables_existence():
+    """Ensures user's database has proper schema for using program"""
+
+    if db.tables_exist():
+        print("database found...")
+    else:
+        db.create_tables()
+        print("database schema created successfully.")
+        db.store_encryption_key()
+        print("encryption key created and stored")
+
+
+def confirm_master_existence():
+    """
+    Ensures the user has a master password for accessing database.
+    Returns the master key for login.
+    """
+
+    master_exists_query = 'SELECT * FROM master'
+    db.cursor.execute(master_exists_query)
+    master_exists = db.cursor.fetchone()
+
+    if master_exists:
+        # queue log in
+        print('it exists')
+        my_master = get_master_key()
+        my_master = decrypt_password(my_master).decode()
+
+    else:
+        # create master password
+        print('it does not exist')
+        new_master = master_key.create_master_key()
+        store_master_key(new_master)
+        my_master = get_master_key()
+        my_master = decrypt_password(my_master).decode()
+
+    return my_master
+
+
+confirm_tables_existence()
+confirm_master_existence()
+master_login(confirm_master_existence())
 
