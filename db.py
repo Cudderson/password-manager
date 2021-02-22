@@ -89,14 +89,6 @@ def store_encryption_key():
         f.write(new_crypt_key)
 
 
-def store_master_key():
-    # create master key
-    new_master, master_key_query = master_key.create_master_key()
-
-    cursor.execute(master_key_query, (new_master,))
-    pm_db.commit()
-
-
 # make sure database is set up correctly
 if tables_exist():
     print("database found...")
@@ -105,5 +97,3 @@ else:
     print("database schema created successfully.")
     store_encryption_key()
     print("encryption key created and stored")
-    store_master_key() # still need to encrypt the master key
-    print("master key created and stored")
