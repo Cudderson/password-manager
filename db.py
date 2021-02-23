@@ -1,4 +1,4 @@
-"""This file will handle SQL database setup"""
+"""This file will handle SQL database setup, also contains functions for reading/writing to database"""
 
 import mysql.connector
 import crypt_key
@@ -106,3 +106,13 @@ def confirm_tables_existence():
         store_encryption_key()
         print("encryption key created and stored")
 
+
+def insert_entry(new_site_name, new_password):
+    """Adds a single entry to mysql database (site, password)"""
+
+    insert_query_site = 'INSERT INTO Sites (Site) VALUES (%s)'
+    insert_query_pass = 'INSERT INTO Passwords (Passwords) VALUES (%s)'
+    cursor.execute(insert_query_site, (new_site_name,))
+    pm_db.commit()
+    cursor.execute(insert_query_pass, (new_password,))
+    pm_db.commit()

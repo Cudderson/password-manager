@@ -5,6 +5,7 @@ import master_key
 from cryptography.fernet import Fernet
 import crypt_utils
 import login
+import dialogue
 
 print("hello world!")
 
@@ -21,9 +22,6 @@ def get_crypt_key():
     return Fernet(my_key)
 
 
-
-
-
 key = get_crypt_key()
 
 db.connect_to_database()
@@ -31,11 +29,8 @@ db.confirm_tables_existence()
 master_key.confirm_master_existence(key)
 login.master_login(master_key.confirm_master_existence(key))
 
-# encrypt something
-xx = input("Value to encrypt: ").encode("UTF-8")
-key = get_crypt_key()
-encrypted_val = crypt_utils.encrypt_password(xx, key)
-print(encrypted_val)
-decrypted_val = crypt_utils.decrypt_password(encrypted_val, key)
-print(decrypted_val.decode())
+print("Let's create a new database entry (site, password)")
+
+dialogue.create_entry(key)
+
 
