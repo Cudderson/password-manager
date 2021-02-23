@@ -58,3 +58,37 @@ def view_one_entry(key):
     else:
         print(f"\nCould not find entry with site name '{site_to_find}'")
         print(f"Cancelling operation. Nothing was altered.")
+
+
+def modify_password(key):
+    site_to_modify = input("\nPlease enter the site name for the password you are modifying: ")
+    # make sure site name exists in db:
+    found_entry = db.entry_exists(site_to_modify)
+
+    if found_entry is not None:
+
+        found_site = found_entry[0]
+        found_pass = found_entry[1]
+
+        print(f"\nReady to change password for {found_site}")
+
+        # decrypt current password
+        decrypted_password = crypt_utils.decrypt_password(found_pass.encode("UTF-8"), key)
+
+        print(f"\nCurrent password for {found_site} is {decrypted_password.decode()}")
+        modded_pass = input(f"\nEnter your new password for {found_site}: ")
+        confirm_modded_pass = input(f"Confirm new password for {found_site}: ")
+
+        if modded_pass == confirm_modded_pass:
+
+            new_password = crypt_utils.encrypt_password(modded_pass.encode("UTF-8"), key)
+            db.modify_one_password(found_site, new_password)
+
+            print(f"\nNew entry added successfully!"
+                  f"\nYour new password for {found_site} is '{modded_pass}'\n")
+
+        else:
+            print("\nNew passwords did not match. No changes were made.\n")
+
+    else:
+        print(f"Could not find site '{site_to_modify}' in database.")

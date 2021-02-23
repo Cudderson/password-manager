@@ -142,3 +142,29 @@ def get_one_entry(site_to_match):
     cursor.execute(get_one_query, (site_to_match,))
     one_entry = cursor.fetchone()
     return one_entry
+
+
+def read_all_entries():
+    """Displays all database information, in the form: (entryid, site, password)"""
+
+    read_all_query = 'SELECT sites.entryid, sites.site, passwords.passwords ' \
+                     'FROM sites, passwords ' \
+                     'WHERE sites.entryid = passwords.entryid'
+
+    cursor.execute(read_all_query)
+    all_entries = cursor.fetchall()
+
+    for entry in all_entries:
+        print(entry)
+
+
+def modify_one_password(site_to_mod, pass_to_mod):
+    """Updates/Modifies the password for a user-given site"""
+
+    modify_pass_query = 'UPDATE Passwords, Sites ' \
+                        'SET passwords = (%s) ' \
+                        'WHERE sites.site = (%s) ' \
+                        'AND sites.entryid = passwords.entryid'
+
+    cursor.execute(modify_pass_query, (pass_to_mod, site_to_mod))
+    pm_db.commit()

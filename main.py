@@ -33,16 +33,12 @@ login.master_login(master_key.confirm_master_existence(key))
 # print("Let's create a new database entry (site, password)")
 # dialogue.create_entry(key)
 
-# Next, let's allow the user to retrieve password from database
-# we need: entry_exists, read_one_entry
-dialogue.view_one_entry(key)
+# This works
+# dialogue.view_one_entry(key)
 
+# This works
+# print("\nHere are the sites you have stored. To get a password, press 'v'\n")
+# db.read_all_entries()
 
-
-
-
-
-
-
-
-
+# This works
+# dialogue.modify_password(key)
