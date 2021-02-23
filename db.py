@@ -6,13 +6,19 @@ import crypt_key
 with open('password.txt', 'r') as f:
     password = f.readline()
 
-pm_db = mysql.connector.connect(
-    host='localhost',
-    username='root',
-    password=password,
-    database='pm_db',
-)
 
+def connect_to_database():
+    db = mysql.connector.connect(
+        host='localhost',
+        username='root',
+        password=password,
+        database='pm_db',
+    )
+
+    return db
+
+
+pm_db = connect_to_database()
 cursor = pm_db.cursor()
 
 
@@ -86,3 +92,17 @@ def store_encryption_key():
 
     with open('crypt_key.txt', "wb") as f:
         f.write(new_crypt_key)
+
+
+# make sure database is set up correctly
+def confirm_tables_existence():
+    """Ensures user's database has proper schema for using program"""
+
+    if tables_exist():
+        print("database found...")
+    else:
+        create_tables()
+        print("database schema created successfully.")
+        store_encryption_key()
+        print("encryption key created and stored")
+
