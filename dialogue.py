@@ -32,3 +32,29 @@ def create_entry(key):
 
     else:
         print("Passwords did not match. No changes were made.")
+
+
+def view_one_entry(key):
+    site_to_find = input("\nPlease enter the site name for the password you need. (twitter): ")
+    entry_to_view = db.entry_exists(site_to_find)
+
+    if entry_to_view is not None:
+
+        desired_pass = db.get_one_entry(site_to_find)
+        desired_pass = desired_pass[1]
+        print(f"\nHere is your encrypted password for {site_to_find}:\n{desired_pass}")
+        confirm_decrypt = input("\nType 'decrypt' to view your password: ")
+
+        if confirm_decrypt == 'decrypt':
+
+            desired_pass = desired_pass.encode("UTF-8")
+            password = crypt_utils.decrypt_password(desired_pass, key)
+            print(f"\nYour password for {site_to_find} is: {password.decode()}")
+            input("\nPress enter to continue: ")
+
+        else:
+            print("\nCommand not recognized. No changes were made.\n")
+
+    else:
+        print(f"\nCould not find entry with site name '{site_to_find}'")
+        print(f"Cancelling operation. Nothing was altered.")

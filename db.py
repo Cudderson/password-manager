@@ -116,3 +116,29 @@ def insert_entry(new_site_name, new_password):
     pm_db.commit()
     cursor.execute(insert_query_pass, (new_password,))
     pm_db.commit()
+
+
+def entry_exists(site):
+    """Makes sure that a given entry exists in database before handling"""
+
+    entry_exists_query = "SELECT sites.site, passwords.passwords " \
+                         "FROM Sites, Passwords " \
+                         "WHERE sites.site = (%s) " \
+                         "AND sites.entryid = passwords.entryid"
+
+    cursor.execute(entry_exists_query, (site,))
+    existing_entry = cursor.fetchone()
+    return existing_entry
+
+
+def get_one_entry(site_to_match):
+    """Displays the password for a user-specified site"""
+
+    get_one_query = 'SELECT sites.site, passwords.passwords ' \
+                    'FROM sites, passwords ' \
+                    'WHERE sites.entryid = passwords.entryid ' \
+                    'AND sites.site = (%s) '
+
+    cursor.execute(get_one_query, (site_to_match,))
+    one_entry = cursor.fetchone()
+    return one_entry
