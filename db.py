@@ -168,3 +168,35 @@ def modify_one_password(site_to_mod, pass_to_mod):
 
     cursor.execute(modify_pass_query, (pass_to_mod, site_to_mod))
     pm_db.commit()
+
+
+def get_entry_id(site_to_match):
+    """Returns the entry_id for a given site in database table"""
+
+    entry_id_query = 'SELECT sites.entryid ' \
+                     'FROM Sites ' \
+                     'WHERE sites.site = (%s)'
+
+    cursor.execute(entry_id_query, (site_to_match,))
+    entry_id = cursor.fetchone()
+    if entry_id:
+        return entry_id[0]
+    else:
+        print(f"Couldn't find site with name '{site_to_match}'.")
+
+
+def delete_entry_from_db(entry_id):
+    """Deletes a site & password from database"""
+
+    delete_site_query = 'DELETE FROM sites ' \
+                        'WHERE sites.entryid = (%s) '
+
+    delete_pass_query = 'DELETE FROM passwords ' \
+                        'WHERE passwords.entryid = (%s) '
+
+    cursor.execute(delete_pass_query, (entry_id,))
+    pm_db.commit()
+    cursor.execute(delete_site_query, (entry_id,))
+    pm_db.commit()
+
+    print(f"Deleted entry successfully.")

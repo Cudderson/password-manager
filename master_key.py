@@ -71,13 +71,11 @@ def confirm_master_existence(key):
 
     if master_exists:
         # queue log in
-        print('it exists')
         my_master = get_master_key()
         my_master = crypt_utils.decrypt_password(my_master, key).decode()
 
     else:
         # create master password
-        print('it does not exist')
         new_master = create_master_key()
         store_master_key(new_master, key)
         my_master = get_master_key()

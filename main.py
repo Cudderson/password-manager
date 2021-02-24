@@ -22,6 +22,36 @@ def get_crypt_key():
     return Fernet(my_key)
 
 
+def main_dialogue():
+    """The main control flow of the program"""
+
+    print("Welcome to Password Manager.\n")
+    while True:
+        mode = input(
+            "Enter a letter to access the corresponding mode:\n"
+            "\t- Press 'a' to add a new password\n"
+            "\t- Press 'v' to view a password\n"
+            "\t- Press 's' to view all sites you have stored\n"
+            "\t- Press 'm' to modify an existing password\n"
+            "\t- Press 'q' to quit program\n"
+            "\nEnter mode : "
+        )
+
+        if mode == 'a':
+            dialogue.create_entry(key)
+        elif mode == 'v':
+            dialogue.view_one_entry(key)
+        elif mode == 's':
+            db.read_all_entries()
+        elif mode == 'm':
+            dialogue.modify_password(key)
+        elif mode == 'q':
+            'Quitting Program.'
+            quit()
+        else:
+            print("mode not recognized.")
+
+
 key = get_crypt_key()
 
 db.connect_to_database()
@@ -29,16 +59,4 @@ db.confirm_tables_existence()
 master_key.confirm_master_existence(key)
 login.master_login(master_key.confirm_master_existence(key))
 
-# This works
-# print("Let's create a new database entry (site, password)")
-# dialogue.create_entry(key)
-
-# This works
-# dialogue.view_one_entry(key)
-
-# This works
-# print("\nHere are the sites you have stored. To get a password, press 'v'\n")
-# db.read_all_entries()
-
-# This works
-# dialogue.modify_password(key)
+main_dialogue()
