@@ -3,13 +3,8 @@
 import db
 import master_key
 from cryptography.fernet import Fernet
-import crypt_utils
 import login
 import dialogue
-
-print("hello world!")
-
-input() # wait for db connection
 
 
 def get_crypt_key():
@@ -22,8 +17,19 @@ def get_crypt_key():
     return Fernet(my_key)
 
 
+def initial_setup():
+    """The inital requirements to use the program """
+    db.connect_to_database()
+    db.confirm_tables_existence()
+    key = get_crypt_key()
+    master_key.confirm_master_existence(key)
+    login.master_login(master_key.confirm_master_existence(key))
+
+
 def main_dialogue():
     """The main control flow of the program"""
+
+    key = get_crypt_key()
 
     print("Welcome to Password Manager.\n")
     while True:
@@ -33,6 +39,7 @@ def main_dialogue():
             "\t- Press 'v' to view a password\n"
             "\t- Press 's' to view all sites you have stored\n"
             "\t- Press 'm' to modify an existing password\n"
+            "\t- Press 'r' to remove a password from database\n"
             "\t- Press 'q' to quit program\n"
             "\nEnter mode : "
         )
@@ -45,18 +52,14 @@ def main_dialogue():
             db.read_all_entries()
         elif mode == 'm':
             dialogue.modify_password(key)
+        elif mode == 'r':
+            dialogue.dialogue_delete_entry()
         elif mode == 'q':
-            'Quitting Program.'
+            print('Quitting Program.')
             quit()
         else:
-            print("mode not recognized.")
+            print("Mode not recognized.")
 
 
-key = get_crypt_key()
-
-db.connect_to_database()
-db.confirm_tables_existence()
-master_key.confirm_master_existence(key)
-login.master_login(master_key.confirm_master_existence(key))
-
+initial_setup()
 main_dialogue()

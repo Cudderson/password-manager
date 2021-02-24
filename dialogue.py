@@ -57,7 +57,7 @@ def view_one_entry(key):
 
     else:
         print(f"\nCould not find entry with site name '{site_to_find}'")
-        print(f"Cancelling operation. Nothing was altered.")
+        print(f"Cancelling operation. Nothing was altered.\n")
 
 
 def modify_password(key):
@@ -97,6 +97,13 @@ def modify_password(key):
 def dialogue_delete_entry():
     """Dialogue for deleting an entry from database"""
 
-    site_to_delete = input("Enter the name of the site that you'd like to delete its entry for: ")
+    site_to_delete = input("\nEnter the name of the site that you'd like to delete its entry for: ")
+
     site_entry_id = db.get_entry_id(site_to_delete)
-    db.delete_entry_from_db(site_entry_id)
+
+    if site_entry_id is not None:
+
+        db.delete_entry_from_db(site_entry_id)
+
+    else:
+        pass

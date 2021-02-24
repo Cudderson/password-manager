@@ -2,7 +2,9 @@
 
 import mysql.connector
 import crypt_key
+import time
 
+# Retrieve password for database connection
 with open('password.txt', 'r') as f:
     password = f.readline()
 
@@ -19,6 +21,8 @@ def connect_to_database():
 
 
 pm_db = connect_to_database()
+
+# Cursor for interacting with database
 cursor = pm_db.cursor()
 
 
@@ -85,8 +89,9 @@ def tables_exist():
     return tables_in_db
 
 
-# store crypt_key
 def store_encryption_key():
+    """Stores a newly generated key in a bytes file"""
+
     # create crypt key
     new_crypt_key = crypt_key.create_crypt_key()
 
@@ -94,17 +99,18 @@ def store_encryption_key():
         f.write(new_crypt_key)
 
 
-# make sure database is set up correctly
 def confirm_tables_existence():
     """Ensures user's database has proper schema for using program"""
 
     if tables_exist():
-        print("database found...")
+        print("Database found.")
     else:
         create_tables()
-        print("database schema created successfully.")
+        print("Database Schema created successfully...")
+        time.sleep(2)
         store_encryption_key()
-        print("encryption key created and stored")
+        print("Encryption Key created and stored successfully...")
+        time.sleep(2)
 
 
 def insert_entry(new_site_name, new_password):
@@ -132,7 +138,7 @@ def entry_exists(site):
 
 
 def get_one_entry(site_to_match):
-    """Displays the password for a user-specified site"""
+    """Returns the password for a user-specified site"""
 
     get_one_query = 'SELECT sites.site, passwords.passwords ' \
                     'FROM sites, passwords ' \
@@ -154,8 +160,11 @@ def read_all_entries():
     cursor.execute(read_all_query)
     all_entries = cursor.fetchall()
 
+    print("\n")
     for entry in all_entries:
         print(entry)
+
+    input("\nPress enter to continue:")
 
 
 def modify_one_password(site_to_mod, pass_to_mod):
@@ -180,9 +189,21 @@ def get_entry_id(site_to_match):
     cursor.execute(entry_id_query, (site_to_match,))
     entry_id = cursor.fetchone()
     if entry_id:
-        return entry_id[0]
+
+        confirmation = input(f"\nYou are about to delete your password for site '{site_to_match}'.\n"
+                             f"Type 'confirm' to continue, or 'q' to quit: ")
+
+        if confirmation == 'confirm':
+            return entry_id[0]
+        elif confirmation == 'q':
+            print("\nCancelling Operation. Nothing was altered.")
+            pass
+        else:
+            print("\nCouldn't recognize command. Cancelling the operation. Nothing was deleted.")
+            pass
+
     else:
-        print(f"Couldn't find site with name '{site_to_match}'.")
+        print(f"\nCouldn't find site with name '{site_to_match}'. Nothing was altered.\n")
 
 
 def delete_entry_from_db(entry_id):
@@ -196,7 +217,8 @@ def delete_entry_from_db(entry_id):
 
     cursor.execute(delete_pass_query, (entry_id,))
     pm_db.commit()
+
     cursor.execute(delete_site_query, (entry_id,))
     pm_db.commit()
 
-    print(f"Deleted entry successfully.")
+    print(f"\nDeleted entry successfully.")

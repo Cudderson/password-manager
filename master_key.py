@@ -70,14 +70,16 @@ def confirm_master_existence(key):
     master_exists = db.cursor.fetchone()
 
     if master_exists:
-        # queue log in
+        # Retrieve and decrypt master
         my_master = get_master_key()
         my_master = crypt_utils.decrypt_password(my_master, key).decode()
 
     else:
-        # create master password
+        # create and store master password
         new_master = create_master_key()
         store_master_key(new_master, key)
+
+        # Retrieve and decrypt master
         my_master = get_master_key()
         my_master = crypt_utils.decrypt_password(my_master, key).decode()
 

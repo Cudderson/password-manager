@@ -12,8 +12,3 @@ def create_crypt_key():
     new_crypt_key = Fernet.generate_key()
 
     return new_crypt_key
-
-    # Save just in case
-    #crypt_query = 'INSERT INTO Crypt (crypt_key) VALUES (%s)'
-    #my_cursor.execute(crypt_query, (crypt_key,))
-    #pw_db.commit()
