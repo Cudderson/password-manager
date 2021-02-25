@@ -1,8 +1,9 @@
 # password-manager
 
-## About
+![password_manager_gif](password_manager_demo.gif)
 
-This project is a CLI password manager that uses Fernet cryptography and SQL to encrypt and store your passwords.
+## About
+#### This project is a CLI password manager that uses Fernet cryptography and MySQL to encrypt and store your passwords.
 
 ## Built With
 - MySQL (mysql-connector for python)
