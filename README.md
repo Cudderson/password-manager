@@ -17,6 +17,10 @@
 
 
 ## 2. Requirements
+
+#### * You will need a MySQL database for MySQLConnector/Python to connect to.
+#### https://dev.mysql.com/
+
 #### Install the required packages needed to run this project (virtual environment preferred):
 - Navigate to the directory for this project and run command: `pip install requirements` 
 
